@@ -745,6 +745,22 @@ params = CGI.parse(uri.query || "")
     @node_js_installed ||= run("#{node_bp_bin_path}/node -v") && $?.success?
   end
 
+  def run_zipnosis_content_parse
+    instrument 'ruby.run_assets_precompile_rake_task' do
+
+      parse = rake.task("zipnosis:parse_and_reset_cache")
+      return true unless parse.is_defined?
+
+      topic "Parsing Zipnosis content and resetting cache"
+      parse.invoke(env: rake_env)
+      if parse.success?
+        puts "Asset precompilation completed (#{"%.2f" % parse.time}s)"
+      else
+        precompile_fail(parse.output)
+      end
+    end
+  end
+
   def run_assets_precompile_rake_task
     instrument 'ruby.run_assets_precompile_rake_task' do
 
