@@ -94,6 +94,7 @@ class LanguagePack::Ruby < LanguagePack::Base
         create_database_yml
         install_binaries
         run_assets_precompile_rake_task
+        run_zipnosis_content_parse
       end
       super
     end
@@ -746,7 +747,7 @@ params = CGI.parse(uri.query || "")
   end
 
   def run_zipnosis_content_parse
-    instrument 'ruby.run_assets_precompile_rake_task' do
+    instrument 'ruby.run_zipnosis_content_parse' do
 
       parse = rake.task("zipnosis:parse_and_reset_cache")
       return true unless parse.is_defined?
